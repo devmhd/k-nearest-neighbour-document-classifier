@@ -85,7 +85,6 @@ public class Parsers {
 			G.trainingArticles = new ArrayList<Article>();
 			G.allWords = new HashSet<String>();
 			
-			G.trainingArticleCount = 0;
 			
 
 			while ((line = br.readLine()) != null){
@@ -99,7 +98,7 @@ public class Parsers {
 				else if(   !(line.contains(" "))  && G.topicsMap.containsKey(line)   ){
 
 					currentTopicIndex = G.topicsMap.get(line);
-					G.trainingArticleCount++;
+					
 //					currentArticleIndex++;
 					
 					G.trainingArticles.add(new Article(currentTopicIndex, true));
@@ -152,7 +151,7 @@ public class Parsers {
 			
 			G.testArticles = new ArrayList<Article>();
 			
-			G.testArticleCount = 0;
+
 			
 
 			while ((line = br.readLine()) != null){
@@ -166,7 +165,6 @@ public class Parsers {
 				else if(   !(line.contains(" "))  && G.topicsMap.containsKey(line)   ){
 
 					currentTopicIndex = G.topicsMap.get(line);
-					G.testArticleCount++;
 
 					
 					G.testArticles.add(new Article(currentTopicIndex, false));

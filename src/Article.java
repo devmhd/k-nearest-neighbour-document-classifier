@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -92,6 +91,7 @@ public class Article {
 	
 	
 	public int distance;
+	public double dDistance;
 
 
 

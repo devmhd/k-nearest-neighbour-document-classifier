@@ -18,7 +18,7 @@ public class Main {
 		for(Article testArticle : G.testArticles){
 			
 			
-			if(G.classifyByHammingDistance(testArticle, 10) == testArticle.topic)
+			if(G.classifyByEuclidianDistance(testArticle, 3) == testArticle.topic)
 				pos++;
 			
 			System.out.println("Now Processing: " + (count++) + " Accuracy: " + (double)pos/count);

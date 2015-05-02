@@ -42,27 +42,36 @@ public class G {
 		dontCareWords.add("on");
 
 	}
+	
+	
+	private static HashSet<String> keyUnion(HashMap<String, Integer> a, HashMap<String, Integer> b ){
+		
+		HashSet<String> wordList = new HashSet<String>();
+		
+		for (Entry<String, Integer> entry : a.entrySet())
+		{
+
+				wordList.add(entry.getKey());
+		}
+		
+
+		for (Entry<String, Integer> entry : b.entrySet())
+		{
+			if( ! (wordList.contains(entry.getKey())))
+
+				wordList.add(entry.getKey());
+		}
+		
+		return wordList;
+	}
 
 
 	public static int hammingDistance(Article trainArticle, Article testArticle){
 
 		int distance = 0;
 
-		HashSet<String> wordList = new HashSet<String>();
+		HashSet<String> wordList = keyUnion(trainArticle.frequency, testArticle.frequency);
 		
-		for (Entry<String, Integer> entry : trainArticle.frequency.entrySet())
-		{
-
-				wordList.add(entry.getKey());
-		}
-		
-
-		for (Entry<String, Integer> entry : testArticle.frequency.entrySet())
-		{
-			if( ! (wordList.contains(entry.getKey())))
-
-				wordList.add(entry.getKey());
-		}
 
 		for(String word : wordList){
 
@@ -73,6 +82,8 @@ public class G {
 		return distance;
 
 	}
+	
+	
 
 
 	public static int classifyByHammingDistance(Article testArticle, int k){
@@ -81,12 +92,83 @@ public class G {
 		// update all distances;
 		for(Article trainArticle : trainingArticles ){
 
-			trainArticle.hammingDistance = hammingDistance(trainArticle, testArticle);
+			trainArticle.distance = hammingDistance(trainArticle, testArticle);
 //			System.out.println("distance " + trainArticle.hammingDistance);
 
 		}
 
 		Collections.sort(trainingArticles, new HammingDistanceComparator());
+
+		
+		int[] topicsFrequency = new int[topicsMap.size()];
+		
+		for(int i=0; i<k; ++i){
+			//System.out.println(topics[trainingArticles.get(i).topic] + " " + trainingArticles.get(i).hammingDistance);
+			topicsFrequency[trainingArticles.get(i).topic]++;
+			
+		}
+		
+		int iMax = -1;
+		int max = 0;
+		for(int i =0; i<topics.length; ++i){
+			
+			if(topicsFrequency[i] > max){
+				max = topicsFrequency[i];
+				iMax = i;
+			}
+		}
+		
+		return iMax;
+
+	}
+	
+	
+	public static double euclidianDistance(Article trainArticle, Article testArticle){
+
+		int sum = 0;
+
+		HashSet<String> wordList = keyUnion(trainArticle.frequency, testArticle.frequency);
+		
+		int difference;
+		
+		int countInTrain, countInTest;
+
+		for(String word : wordList){
+			
+			if(trainArticle.contains(word))
+				countInTrain = trainArticle.frequency.get(word);
+			else
+				countInTrain = 0;
+			
+			
+			if(testArticle.contains(word))
+				countInTest = testArticle.frequency.get(word);
+			else
+				countInTest = 0;
+			
+			
+			sum += ((countInTrain - countInTest) * (countInTrain - countInTest));
+			
+			
+			
+		}
+
+		return Math.sqrt(sum);
+
+	}
+	
+	public static int classifyByEuclidianDistance(Article testArticle, int k){
+
+
+		// update all distances;
+		for(Article trainArticle : trainingArticles ){
+
+			trainArticle.dDistance = euclidianDistance(trainArticle, testArticle);
+//			System.out.println("distance " + trainArticle.hammingDistance);
+
+		}
+
+		Collections.sort(trainingArticles, new DoubleDistanceComparator());
 
 		
 		int[] topicsFrequency = new int[topicsMap.size()];
